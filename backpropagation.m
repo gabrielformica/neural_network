@@ -1,5 +1,5 @@
 % Neural Network module
-function [newWih, newWho] = backpropagation(valuesi, target, Wih, Who, rate)
+function [newWih, newWho, deltao] = backpropagation(valuesi, target, Wih, Who, rate)
     [valuesh, valueso, deltao] = feedfoward(Wih, Who, valuesi, target);
     [deltai, deltah] = backpropagate(Wih, Who, deltao);
     [newWih, newWho] = updateweights(Wih, Who, valuesi, valuesh, valueso, deltai, deltah, deltao, rate);
@@ -19,12 +19,12 @@ function [deltai, deltah] = backpropagate(Wih, Who, deltao)
 endfunction
 
 function [valuesh, valueso, deltao] = feedfoward(Wih, Who, inputs, target)
-   valuesh = arrayfun(@sigmoid, inputs * Wih);
-   valueso = arrayfun(@sigmoid, valuesh * Who);
-   deltao = (target - valueso)';
+   valuesh = arrayfun(@tanh, inputs * Wih);
+   valueso = arrayfun(@tanh, valuesh * Who);
+   deltao = ((target - valueso)' .^ 2) / 2;   % squared error
 endfunction
 
 % Activation function
-function y = sigmoid(x)
-    y = 1 / (1+e^(-x));
-endfunction
+% function y = sigmoid(x)
+%     y = 1 / (1+e^(-x));
+% endfunction
