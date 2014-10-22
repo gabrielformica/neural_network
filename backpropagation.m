@@ -35,7 +35,7 @@ function [valuesh, der_valuesh, valueso, der_valueso, deltao] = feedforward(Wih,
 
    % squared error
    % deltao = ((target - valueso)' .^ 2) ./ 2;
-   deltao = (target - valueso)';
+   deltao = (valueso) .* (1 - valueso) .* (target - valueso)'
 end
 
 % Activation function

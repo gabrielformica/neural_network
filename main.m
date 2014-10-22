@@ -5,6 +5,7 @@ function main(training_file)
 
     for i = 1 : 100
        [xs,ys,ts] = textread(training_file, '%f %f %f', 'delimiter', ' ');
+       j
        for j = 1:length(xs)
            [Wih, Who, delta] = backpropagation([xs(j), ys(j)], ts(j), Wih, Who, 0.01);
            deltas(j + i .* length(xs)) = delta;
@@ -36,7 +37,7 @@ function test(testing_file, Wih, Who)
     for i = 1 : length(xs)
         [valuesh, _, output, _, deltao] = feedforward(Wih, Who, [xs(i), ys(i)], ts(i));
         outputs(i) = output;
-        if (output >= 0)
+        if (output >= 0.5)
            plot(xs(i), ys(i), 'g+')
         else
            plot(xs(i), ys(i), 'r+')
