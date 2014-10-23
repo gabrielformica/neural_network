@@ -1,7 +1,10 @@
 source('backpropagation.m')
+arg_list = argv();
+training_file = arg_list{1}
+testing_file = arg_list{2}
 
-function main(training_file)
-    [Wih, Who, biash, biaso] = initialize(2,8,1);
+function main(training_file, testing_file)
+    [Wih, Who, biash, biaso] = initialize(2,10,1);
 
     errors = [0]
 
@@ -20,7 +23,7 @@ function main(training_file)
         errors(i) = err;
         plot(i,err);
         if ((abs(errors(i-1) - errors(i)) < 0.0001) || (err < 0.1))
-            printf('exit by error at the %dth iteration', i);
+            printf('exit by error at the %dth iteration\n', i);
             break;
         end
     end
@@ -35,10 +38,11 @@ function main(training_file)
     circsy = radius .* sin(t) + centery;
 
     figure;
-    plot(circsx,circsy);
+    plot(circsx,circsy) ;
     hold on;
-    test(training_file, Wih, Who, biash, biaso);
+    test(testing_file, Wih, Who, biash, biaso);
     hold off;
+    print('plots.png')
 end
 
 function test(testing_file, Wih, Who, biash, biaso)
@@ -65,3 +69,5 @@ function [Wih, Who, biash, biaso] = initialize(input_size, hidden_size, output_s
     biash = rand(1,hidden_size) - 0.5;
     biaso = rand(1,output_size) - 0.5;
 end
+
+main(training_file, testing_file)
