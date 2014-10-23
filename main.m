@@ -19,8 +19,8 @@ function main(training_file)
         end
         errors(i) = err;
         plot(i,err);
-        if (abs(errors(i-1) - errors(i)) < 0.0001)
-            disp('exit by error');
+        if ((abs(errors(i-1) - errors(i)) < 0.0001) || (err < 0.1))
+            printf('exit by error at the %dth iteration', i);
             break;
         end
     end
