@@ -2,7 +2,7 @@ module Main where
 
 import Control.Arrow (second)
 
-values = takeWhile (<20) [0,0.75..]
+values = takeWhile (<20) [0,0.2..]
 
 circle_center = (10,10)
 circle_rad   = 7
