@@ -44,20 +44,19 @@ end
 function test(testing_file, Wih, Who, biash, biaso)
     [xs,ys,ts] = textread(testing_file, '%f %f %f', 'delimiter', ' ');
 
-    outputs = [];
+    % outputs = [];
     for j = 1 : length(xs)
         if (ts(j) < 0)
             ts(j) = 0;
         end
         [valuesh, _, output, _, deltao] = feedforward(Wih, Who, biash, biaso, [xs(j), ys(j)], ts(j));
-        outputs(j) = output;
+        % outputs(j) = output;
         if (output >= 0.5)
            plot(xs(j), ys(j), 'g+')
         else
            plot(xs(j), ys(j), 'r+')
         end
     end
-    outputs
 end
 
 function [Wih, Who, biash, biaso] = initialize(input_size, hidden_size, output_size)
