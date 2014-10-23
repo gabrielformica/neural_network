@@ -55,10 +55,15 @@ function test(testing_file, Wih, Who, biash, biaso)
         end
         [valuesh, _, output, _, deltao] = feedforward(Wih, Who, biash, biaso, [xs(j), ys(j)], ts(j));
         % outputs(j) = output;
-        if (output >= 0.5)
-           plot(xs(j), ys(j), 'g+')
+
+        if (round(output) == ts(j))
+            if (round(output) == 0)
+               plot(xs(j), ys(j), 'g+')
+            else
+               plot(xs(j), ys(j), 'r+')
+            end
         else
-           plot(xs(j), ys(j), 'r+')
+            plot(xs(j), ys(j), 'k+')
         end
     end
 end
