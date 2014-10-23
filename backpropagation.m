@@ -1,41 +1,38 @@
 % Neural Network module
 1;
 
-function [newWih, newWho, deltao] = backpropagation(valuesi, target, Wih, Who, rate)
-    [valuesh, der_valuesh, valueso, der_valueso, deltao] = feedforward(Wih, Who, valuesi, target);
-    [deltai, deltah] = backpropagate(Wih, Who, deltao);
-    [newWih, newWho] = updateweights(Wih, Who, valuesi, valuesh, valueso, der_valuesh, der_valueso, deltai, deltah, deltao, rate);
+function [newWih, newWho, newBiash, newBiaso, deltao] = backpropagation(valuesi, target, Wih, Who, biash, biaso, rate)
+    [valuesh, der_valuesh, valueso, der_valueso, deltao] = feedforward(Wih, Who, biash, biaso, valuesi, target);
+    [deltah] = backpropagate(Wih, Who, deltao);
+    [newWih, newWho, newBiash, newBiaso] = updateweights(Wih, Who, biash, biaso, valuesi, valuesh, der_valuesh, der_valueso, deltah, deltao, rate);
 end
 
-function [newWih, newWho] = updateweights(Wih, Who, valuesi, valuesh, valueso, der_valuesh, der_valueso, deltai, deltah, deltao, rate)
-    deltaWih = valuesi' * (deltah' .* der_valuesh);
-    deltaWho = valuesh' * (deltao' .* der_valueso);
-
-    newWih   = Wih + (rate .* deltaWih);
-    newWho   = Who + (rate .* deltaWho);
+function [newWih, newWho, newBiash, newBiaso] = updateweights(Wih, Who, biash, biaso, valuesi, valuesh, der_valuesh, der_valueso, deltah, deltao, rate)
+    newWih   = Wih + (rate .* (valuesi' * (deltah' .* der_valuesh)));
+    newWho   = Who + (rate .* (valuesh' * (deltao' .* der_valueso)));
+    newBiash = biash + (rate .* (deltah' .* der_valuesh));
+    newBiaso = biaso + (rate .* (deltao' .* der_valueso));
 end
 
-function [deltai, deltah] = backpropagate(Wih, Who, deltao)
+function [deltah] = backpropagate(Wih, Who, deltao)
     deltah = Who * deltao;
-    deltai = Wih * deltah;
+    % deltai = Wih * deltah;
 end
 
-function [valuesh, der_valuesh, valueso, der_valueso, deltao] = feedforward(Wih, Who, inputs, target)
-  % tanh
-   % valuesh = arrayfun(@tanh, inputs * Wih);
-   % valueso = arrayfun(@tanh, valuesh * Who);
-   % der_valuesh = arrayfun(@sech, inputs * Wih) .^ 2;
-   % der_valueso = arrayfun(@sech, valuesh * Who) .^ 2;
+function [valuesh, der_valuesh, valueso, der_valueso, deltao] = feedforward(Wih, Who, biash, biaso, inputs, target)
+    % tanh
+    % valuesh = arrayfun(@tanh, (inputs * Wih) + biash);
+    % valueso = arrayfun(@tanh, (valuesh * Who) + biaso);
+    % der_valuesh = arrayfun(@sech, inputs * Wih) .^ 2;
+    % der_valueso = arrayfun(@sech, valuesh * Who) .^ 2;
 
-   % sigmoid'
-   valuesh = arrayfun(@sigmoid, inputs * Wih);
-   valueso = arrayfun(@sigmoid, valuesh * Who);
-   der_valuesh = valuesh .* (1 - valuesh);
-   der_valueso = valueso .* (1 - valueso);
+    % sigmoid'
+    valuesh = arrayfun(@sigmoid, (inputs * Wih) + biash);
+    valueso = arrayfun(@sigmoid, (valuesh * Who) + biaso);
+    der_valuesh = valuesh .* (1 - valuesh);
+    der_valueso = valueso .* (1 - valueso);
 
-   % squared error
-   % deltao = ((target - valueso)' .^ 2) ./ 2;
-   deltao = (valueso) .* (1 - valueso) .* (target - valueso)'
+    deltao = der_valueso .* (target - valueso)';
 end
 
 % Activation function
