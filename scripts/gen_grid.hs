@@ -17,12 +17,12 @@ check = map func plane
         func c = (c, (inside circle_center circle_rad c))
 
 fromBool :: Bool -> Float
-fromBool True  = 1
-fromBool False = 0
+fromBool True  = 0
+fromBool False = 1
 
 fromBool' :: Bool -> Float
-fromBool' True  = 1
-fromBool' False = -1
+fromBool' True  = -1
+fromBool' False = 1
 
 main :: IO ()
 main = mapM_ putStrLn $ generate fromBool'

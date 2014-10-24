@@ -22,7 +22,8 @@ function main(training_file, testing_file)
         end
         errors(i) = err;
         plot(i,err);
-        if ((abs(errors(i-1) - errors(i)) < 0.0001) || (err < 0.1))
+        de = errors(i-1) - errors(i);
+        if ((0 < de && de < 0.0000001 && i >= 1000) || err < 0.1)
             printf('exit by error at the %dth iteration\n', i);
             break;
         end
@@ -42,7 +43,6 @@ function main(training_file, testing_file)
     hold on;
     test(testing_file, Wih, Who, biash, biaso);
     hold off;
-    print('plots.png')
 end
 
 function test(testing_file, Wih, Who, biash, biaso)

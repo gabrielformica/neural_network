@@ -36,7 +36,7 @@ def main():
     while (inside < num_points / 2):
         x = random() * X_LIMIT 
         y = random() * Y_LIMIT 
-        if not inside_circle(x,y):
+        if inside_circle(x,y):
             points.append(((x,y), -1))
             inside += 1
 
