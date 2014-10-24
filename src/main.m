@@ -33,7 +33,6 @@ function main(training_file, testing_file, input_nodes, hidden_nodes, output_nod
         end
     end
     err
-    print(strcat('errores-', training_file, '-', hidden_nodes, '.png'))
 
     % plotting the circle
     radius  = 7;
@@ -48,7 +47,6 @@ function main(training_file, testing_file, input_nodes, hidden_nodes, output_nod
     hold on;
     test(testing_file, Wih, Who, biash, biaso);
     hold off;
-    print(strcat('test-', training_file, '-', hidden_nodes, '.png'))
 end
 
 function test(testing_file, Wih, Who, biash, biaso)
