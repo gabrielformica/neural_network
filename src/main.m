@@ -3,12 +3,16 @@ arg_list = argv();
 training_file = arg_list{1}
 testing_file = arg_list{2}
 
-function main(training_file, testing_file)
-    [Wih, Who, biash, biaso] = initialize(2,10,1);
+input_nodes = arg_list{3}
+hidden_nodes = arg_list{4}
+output_nodes = arg_list{5}
+
+function main(training_file, testing_file, input_nodes, hidden_nodes, output_nodes)
+    [Wih, Who, biash, biaso] = initialize(str2num(input_nodes), str2num(hidden_nodes), str2num(output_nodes));
 
     errors = [0]
 
-    figure;
+    figure('name', strcat('errores -', training_file, '-', hidden_nodes));
     hold on;
     for i = 2 : 3000
         [xs,ys,ts] = textread(training_file, '%f %f %f', 'delimiter', ' ');
@@ -29,6 +33,7 @@ function main(training_file, testing_file)
         end
     end
     err
+    print(strcat('errores-', training_file, '-', hidden_nodes, '.png'))
 
     % plotting the circle
     radius  = 7;
@@ -38,11 +43,12 @@ function main(training_file, testing_file)
     circsx = radius .* cos(t) + centerx;
     circsy = radius .* sin(t) + centery;
 
-    figure;
+    figure('name', strcat('test -', training_file, '-', hidden_nodes))
     plot(circsx,circsy) ;
     hold on;
     test(testing_file, Wih, Who, biash, biaso);
     hold off;
+    print(strcat('test-', training_file, '-', hidden_nodes, '.png'))
 end
 
 function test(testing_file, Wih, Who, biash, biaso)
@@ -75,4 +81,4 @@ function [Wih, Who, biash, biaso] = initialize(input_size, hidden_size, output_s
     biaso = rand(1,output_size) - 0.5;
 end
 
-main(training_file, testing_file)
+main(training_file, testing_file, input_nodes, hidden_nodes, output_nodes)
