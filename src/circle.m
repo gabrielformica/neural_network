@@ -3,16 +3,14 @@ arg_list = argv();
 training_file = arg_list{1}
 testing_file = arg_list{2}
 
-input_nodes = arg_list{3}
-hidden_nodes = arg_list{4}
-output_nodes = arg_list{5}
+hidden_nodes = arg_list{3}
 
-function main(training_file, testing_file, input_nodes, hidden_nodes, output_nodes)
-    [Wih, Who, biash, biaso] = initialize(str2num(input_nodes), str2num(hidden_nodes), str2num(output_nodes));
+function main(training_file, testing_file, hidden_nodes)
+    [Wih, Who, biash, biaso] = initialize(2, str2num(hidden_nodes), 1);
 
-    errors = [0]
+    errors = [0];
 
-    figure('name', strcat('errores -', training_file, '-', hidden_nodes));
+    figure('name', strcat('errors -', training_file, '-', hidden_nodes));
     hold on;
     for i = 2 : 3000
         [xs,ys,ts] = textread(training_file, '%f %f %f', 'delimiter', ' ');
@@ -79,4 +77,4 @@ function [Wih, Who, biash, biaso] = initialize(input_size, hidden_size, output_s
     biaso = rand(1,output_size) - 0.5;
 end
 
-main(training_file, testing_file, input_nodes, hidden_nodes, output_nodes)
+main(training_file, testing_file, hidden_node)
