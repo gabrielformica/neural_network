@@ -12,14 +12,16 @@ function main(training_file, testing_file, hidden_nodes)
 
     figure('name', strcat('errors -', training_file, '-', hidden_nodes));
     hold on;
+
+    [xs,ys,ts] = textread(training_file, '%f %f %f', 'delimiter', ' ');
+    features = [xs,ys];
     for i = 2 : 3000
-        [xs,ys,ts] = textread(training_file, '%f %f %f', 'delimiter', ' ');
         err = 0;
         for j = 1:length(xs)
             if (ts(j) < 0)
                 ts(j) = 0;
             end
-            [Wih, Who, biash, biaso, delta] = backpropagation([xs(j), ys(j)], ts(j), Wih, Who, biash, biaso, 0.01);
+            [Wih, Who, biash, biaso, delta] = backpropagation(features(j,:), ts(j), Wih, Who, biash, biaso, 0.01);
             err = err + (delta .^ 2) ./ 2;
         end
         errors(i) = err;
@@ -77,4 +79,4 @@ function [Wih, Who, biash, biaso] = initialize(input_size, hidden_size, output_s
     biaso = rand(1,output_size) - 0.5;
 end
 
-main(training_file, testing_file, hidden_node)
+main(training_file, testing_file, hidden_nodes)
