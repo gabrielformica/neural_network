@@ -18,7 +18,7 @@ function main(training_file, testing_file, hidden_nodes)
 
     for i = 2 : 3000
         err = 0;
-        for j = 1:length(sls)
+        for j = 1:length(features(:,1))
             if (cls(j) == 0)        % Iris-setosa
                 target = [1,0,0];
             elseif (cls(j) == 1)    % Iris-versicolor
@@ -29,7 +29,9 @@ function main(training_file, testing_file, hidden_nodes)
                 error('unknown class');
             end
             [Wih, Who, biash, biaso, delta] = backpropagation(features(j,:), target, Wih, Who, biash, biaso, 0.01);
-            err = err + (delta .^ 2) ./ 2;
+            for k = 1:length(delta)
+                err = err .+ (delta(k) .^ 2) ./ 2;
+            end
         end
         errors(i) = err;
         plot(i,err);
@@ -41,26 +43,17 @@ function main(training_file, testing_file, hidden_nodes)
     end
     err
 
-    % plotting the circle
-    radius  = 7;
-    centerx = 10;
-    centery = 10;
-    t = linspace(0,2*pi,100)';
-    circsx = radius .* cos(t) + centerx;
-    circsy = radius .* sin(t) + centery;
-
-    figure('name', strcat('test -', training_file, '-', hidden_nodes))
-    plot(circsx,circsy) ;
-    hold on;
     test(testing_file, Wih, Who, biash, biaso);
-    hold off;
 end
 
 function test(testing_file, Wih, Who, biash, biaso)
-    [xs,ys,ts] = textread(testing_file, '%f %f %f', 'delimiter', ' ');
+    [sls,sws,pls,pws,cls] = textread(testing_file, '%f %f %f %f %d', 'delimiter', ' ');
+    features = [sls,sws,pls,pws];
+
+    right = 0;
 
     % outputs = [];
-    for j = 1 : length(xs)
+    for j = 1:length(features(:,1))
         if (cls(j) == 0)        % Iris-setosa
             target = [1,0,0];
         elseif (cls(j) == 1)    % Iris-versicolor
@@ -70,28 +63,14 @@ function test(testing_file, Wih, Who, biash, biaso)
         else
             error('unknown class');
         end
-        % if (cls(j) == 'Iris-setosa')
-        %     cls(j) = [1,0,0];
-        % elseif (cls(j) == 'Iris-versicolor')
-        %     cls(j) = [0,1,0];
-        % elseif (cls(j) == 'Iris-virginica')
-        %     cls(j) = [0,0,1];
-        % else
-        %     error('unknown class');
-        % end
-        [valuesh, _, output, _, deltao] = feedforward(Wih, Who, biash, biaso, [xs(j), ys(j)], ts(j));
-        % outputs(j) = output;
+        [_, _, output, _, _] = feedforward(Wih, Who, biash, biaso, features(j,:), target);
 
-        if (round(output) == ts(j))
-            if (round(output) == 0)
-               plot(xs(j), ys(j), 'g+')
-            else
-               plot(xs(j), ys(j), 'r+')
-            end
-        else
-            plot(xs(j), ys(j), 'k+')
+        if (round(output) == target)
+            right += 1;
         end
     end
+
+    printf('%d right guesses out of %d.', right, length(features(:,1)));
 end
 
 function [Wih, Who, biash, biaso] = initialize(input_size, hidden_size, output_size)
