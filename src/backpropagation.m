@@ -8,6 +8,10 @@ function [newWih, newWho, newBiash, newBiaso, deltao] = backpropagation(valuesi,
 end
 
 function [newWih, newWho, newBiash, newBiaso] = updateweights(Wih, Who, biash, biaso, valuesi, valuesh, der_valuesh, der_valueso, deltah, deltao, rate)
+    valuesi
+    deltah
+    der_valuesh
+    Wih
     newWih   = Wih + (rate .* (valuesi' * (deltah' .* der_valuesh)));
     newWho   = Who + (rate .* (valuesh' * (deltao' .* der_valueso)));
     newBiash = biash + (rate .* (deltah' .* der_valuesh));

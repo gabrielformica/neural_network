@@ -6,23 +6,27 @@ testing_file = arg_list{2}
 hidden_nodes = arg_list{3}
 
 function main(training_file, testing_file, hidden_nodes)
-    [Wih, Who, biash, biaso] = initialize(2, str2num(hidden_nodes), 1);
+    [Wih, Who, biash, biaso] = initialize(4, str2num(hidden_nodes), 3);
 
     errors = [0];
 
     figure('name', strcat('errors -', training_file, '-', hidden_nodes));
     hold on;
 
-    [xs,ys,ts] = textread(training_file, '%f %f %f', 'delimiter', ' ');
-    features = [xs,ys];
+    [sls,sws,pls,pws,cls] = textread(training_file, '%f %f %f %f %d', 'delimiter', ' ');
+    features = [sls,sws,pls,pws];
 
     for i = 2 : 3000
         err = 0;
-        for j = 1:length(features(:,1))
-            if (ts(j) < 0)
-                target = 0;
+        for j = 1:length(sls)
+            if (cls(j) == 0)        % Iris-setosa
+                target = [1,0,0];
+            elseif (cls(j) == 1)    % Iris-versicolor
+                target = [0,1,0];
+            elseif (cls(j) == 2)    % Iris-virginica
+                target = [0,0,1];
             else
-                target = 1;
+                error('unknown class');
             end
             [Wih, Who, biash, biaso, delta] = backpropagation(features(j,:), target, Wih, Who, biash, biaso, 0.01);
             err = err + (delta .^ 2) ./ 2;
@@ -54,16 +58,28 @@ end
 
 function test(testing_file, Wih, Who, biash, biaso)
     [xs,ys,ts] = textread(testing_file, '%f %f %f', 'delimiter', ' ');
-    features = [xs,ys];
 
     % outputs = [];
     for j = 1 : length(xs)
-        if (ts(j) < 0)
-            ts(j) = 0;
+        if (cls(j) == 0)        % Iris-setosa
+            target = [1,0,0];
+        elseif (cls(j) == 1)    % Iris-versicolor
+            target = [0,1,0];
+        elseif (cls(j) == 2)    % Iris-virginica
+            target = [0,0,1];
         else
-            target = 1;
+            error('unknown class');
         end
-        [valuesh, _, output, _, deltao] = feedforward(Wih, Who, biash, biaso, features(j,:), target);
+        % if (cls(j) == 'Iris-setosa')
+        %     cls(j) = [1,0,0];
+        % elseif (cls(j) == 'Iris-versicolor')
+        %     cls(j) = [0,1,0];
+        % elseif (cls(j) == 'Iris-virginica')
+        %     cls(j) = [0,0,1];
+        % else
+        %     error('unknown class');
+        % end
+        [valuesh, _, output, _, deltao] = feedforward(Wih, Who, biash, biaso, [xs(j), ys(j)], ts(j));
         % outputs(j) = output;
 
         if (round(output) == ts(j))
